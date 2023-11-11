@@ -14,7 +14,6 @@ def retrieve_summary(paper_content, prompt_header=None, num_pages=1, model="gpt-
                 you can also include your own opinions and ideas."
     
     client = OpenAI()
-
     response = client.chat.completions.create(
     model=model,
     messages=[
