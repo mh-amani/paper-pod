@@ -11,12 +11,12 @@ import logging
 
 from telegram import ForceReply, Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
-from keys import TELEGRAM_KEY
+from keys import TELEGRAM_KEY, OPENAI_KEY, HUGGING_FACE_KEY
 import validators
 from extract_paper_content import extract_paper_content
 from retrieve_summary import retrieve_summary
 from text_to_speech import text_to_speech
-
+import os
 
 # Define a few command handlers. These usually take the two arguments update and
 # context.
@@ -50,6 +50,7 @@ def main() -> None:
     """Start the bot."""
     # Create the Application and pass it your bot's token.
     application = Application.builder().token(TELEGRAM_KEY).build()
+    os.environ["OPENAI_API_KEY"] = OPENAI_KEY
 
     # on different commands - answer in Telegram
     application.add_handler(CommandHandler("start", start))
