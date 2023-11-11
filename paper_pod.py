@@ -12,15 +12,10 @@ import logging
 from telegram import ForceReply, Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 from keys import TELEGRAM_KEY
-
-# Enable logging
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-# set higher logging level for httpx to avoid all GET and POST requests being logged
-logging.getLogger("httpx").setLevel(logging.WARNING)
-
-logger = logging.getLogger(__name__)
+import validators
+from extract_paper_content import extract_paper_content
+from retrieve_summary import retrieve_summary
+from text_to_speech import text_to_speech
 
 
 # Define a few command handlers. These usually take the two arguments update and
@@ -41,7 +36,14 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
 async def process_paper(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Process paper."""
-    await update.message.reply_text(update.message.text)
+    url = update.message.text
+    if not validators.url(url) and not url.endswith(".pdf"):
+        await update.message.reply_text("Not a valid URL to a PDF file")
+        return
+    paper_content = extract_paper_content(url)
+    summary = retrieve_summary(paper_content)
+    speech_file_path = text_to_speech(summary)
+    await update.message.reply_voice(speech_file_path)
 
 
 def main() -> None:

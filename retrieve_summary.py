@@ -1,14 +1,7 @@
-from langchain.document_loaders import PyPDFLoader
 from openai import OpenAI
 
-def RetrieveSummary(PDF_URL, prompt_header=None, num_pages=1, model="gpt-4-1106-preview"):
 
-    loader = PyPDFLoader(PDF_URL)
-    pages = loader.load_and_split()
-
-    paper_text = [pages[i].page_content for i in range(len(pages))]
-    paper_text = " ".join(paper_text)
-
+def retrieve_summary(paper_content, prompt_header=None, num_pages=1, model="gpt-4-1106-preview"):
     if prompt_header is None:
         prompt_header = f"Read this paper and generate a critical {num_pages}-page summary of the keypoints. \
                 make sure to include the following information in your summary if available: \
@@ -26,7 +19,7 @@ def RetrieveSummary(PDF_URL, prompt_header=None, num_pages=1, model="gpt-4-1106-
     model=model,
     messages=[
         {"role": "system", "content": prompt_header},
-        {"role": "user", "content": paper_text},
+        {"role": "user", "content": paper_content},
     ]
     )
 
