@@ -1,0 +1,4 @@
+python-telegram-bot[job-queue] --pre
+pypdf
+langchain
+langchain_experimental
